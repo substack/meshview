@@ -6,7 +6,10 @@ var argv = minimist(process.argv.slice(2), {
   alias: { p: 'port' },
   default: { port: 7420 }
 })
-var st = require('ecstatic')(path.join(__dirname,'public'))
+var st = require('ecstatic')({
+  root: path.join(__dirname,'public'),
+  gzip: true
+})
 
 var concat = require('concat-stream')
 var mesh = null, meshqueue = []

@@ -16,7 +16,7 @@
     "resl": "^1.0.2"
   },
   "scripts": {
-    "build": "browserify browser/main.js > public/bundle.js"
+    "build": "browserify -t es2020 browser/main.js | gzip > public/bundle.js.gz"
   },
   "keywords": [
     "simplicial complex",
@@ -24,5 +24,8 @@
     "mesh"
   ],
   "author": "substack",
-  "license": "BSD"
+  "license": "BSD",
+  "devDependencies": {
+    "es2020": "^1.1.9"
+  }
 }

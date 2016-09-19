@@ -1,0 +1,28 @@
+{
+  "name": "meshview",
+  "version": "1.0.0",
+  "description": "render a simplicial complex mesh in the browser",
+  "bin": {
+    "meshview": "cmd.js"
+  },
+  "dependencies": {
+    "angle-normals": "^1.0.0",
+    "concat-stream": "^1.5.2",
+    "ecstatic": "^2.1.0",
+    "gl-mat4": "^1.1.4",
+    "minimist": "^1.2.0",
+    "regl": "^1.2.1",
+    "regl-camera": "^1.1.0",
+    "resl": "^1.0.2"
+  },
+  "scripts": {
+    "build": "browserify browser/main.js > public/bundle.js"
+  },
+  "keywords": [
+    "simplicial complex",
+    "3d",
+    "mesh"
+  ],
+  "author": "substack",
+  "license": "BSD"
+}

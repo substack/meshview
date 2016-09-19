@@ -27,5 +27,14 @@
   "license": "BSD",
   "devDependencies": {
     "es2020": "^1.1.9"
-  }
+  },
+  "main": "cmd.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/substack/meshview.git"
+  },
+  "bugs": {
+    "url": "https://github.com/substack/meshview/issues"
+  },
+  "homepage": "https://github.com/substack/meshview#readme"
 }

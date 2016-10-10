@@ -13,10 +13,16 @@
     "minimist": "^1.2.0",
     "regl": "^1.2.1",
     "regl-camera": "^1.1.0",
-    "resl": "^1.0.2"
+    "resl": "^1.0.2",
+    "screen-projected-lines": "^1.1.1"
   },
   "scripts": {
-    "build": "browserify -t es2020 browser/main.js | gzip > public/bundle.js.gz"
+    "build": "browserify browser/main.js | gzip > public/bundle.js.gz"
+  },
+  "browserify": {
+    "transform": [
+      "glslify"
+    ]
   },
   "keywords": [
     "simplicial complex",
@@ -26,7 +32,7 @@
   "author": "substack",
   "license": "BSD",
   "devDependencies": {
-    "es2020": "^1.1.9"
+    "glslify": "^6.0.0"
   },
   "main": "cmd.js",
   "repository": {

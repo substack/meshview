@@ -3,9 +3,26 @@ var camera = require('regl-camera')(regl, {
   center: [0,0,0],
   distance: 4
 })
+var glx = require('glslify')
 var resl = require('resl')
 var anormals = require('angle-normals')
 var mat4 = require('gl-mat4')
+var wlines = require('screen-projected-lines')
+var qs = require('querystring')
+
+var params = qs.parse(location.hash.replace(/^#/,''))
+var state = {
+  display: params.display || 'solid'
+}
+var draw = {}
+
+window.addEventListener('keydown', function (ev) {
+  if (ev.keyCode === 0x57) { // w -> wireframe
+    state.display = state.display === 'wireframe'
+      ? 'solid' : 'wireframe'
+    location.hash = '#' + qs.stringify(state)
+  }
+})
 
 resl({
   manifest: {
@@ -16,15 +33,24 @@ resl({
     }
   },
   onDone: function (assets) {
-    var draw = Mesh(assets.mesh)
+    check()
     regl.frame(function () {
+      check()
       regl.clear({ color: [0,0,0,1], depth: true })
-      camera(function () { draw() })
+      camera(function () { draw[state.display]() })
     })
+    function check () {
+      if (draw[state.display]) return
+      if (state.display === 'wireframe') {
+        draw.wireframe = wireframe(assets.mesh)
+      } else {
+        draw.solid = solid(assets.mesh)
+      }
+    }
   }
 })
 
-function Mesh (mesh) {
+function solid (mesh) {
   var model = []
   return regl({
     frag: `
@@ -60,5 +86,47 @@ function Mesh (mesh) {
       }
     },
     elements: mesh.cells
+  })
+}
+
+function wireframe (mesh) {
+  var model = []
+  var wmesh = wlines(mesh)
+  return regl({
+    frag: `
+      precision mediump float;
+      void main () {
+        gl_FragColor = vec4(1,1,1,1);
+      }
+    `,
+    vert: glx`
+      precision mediump float;
+      #pragma glslify: linevoffset = require('screen-projected-lines')
+      uniform mat4 projection, view, model;
+      uniform float aspect;
+      attribute vec3 position, nextpos;
+      attribute float direction;
+      void main () {
+        mat4 proj = projection * view * model;
+        vec4 p = proj * vec4(position,1);
+        vec4 n = proj * vec4(nextpos,1);
+        vec4 offset = linevoffset(p,n,direction,aspect);
+        gl_Position = p + offset * 0.02;
+      }
+    `,
+    attributes: {
+      position: wmesh.positions,
+      nextpos: wmesh.nextPositions,
+      direction: wmesh.directions
+    },
+    uniforms: {
+      model: function () {
+        return mat4.identity(model)
+      },
+      aspect: function (context) {
+        return context.viewportWidth / context.viewportHeight
+      }
+    },
+    elements: wmesh.cells
   })
 }

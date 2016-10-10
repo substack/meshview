@@ -1,6 +1,6 @@
 {
   "name": "meshview",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "render a simplicial complex mesh in the browser",
   "bin": {
     "meshview": "cmd.js"

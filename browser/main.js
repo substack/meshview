@@ -11,6 +11,7 @@ var state = qs.parse(location.hash.replace(/^#/,''))
 if (!state.display) state.display = 'solid'
 
 var camera = require('regl-camera')(regl, {
+  center: state.center ? state.center.split(',').map(Number) : [0,0,0],
   theta: Number(state.theta || 0),
   phi: Number(state.phi || 0),
   distance: Number(state.distance || 4)

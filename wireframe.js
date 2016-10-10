@@ -1,5 +1,6 @@
 var wireframe = require('screen-projected-lines')
 var glx = require('glslify')
+var mat4 = require('gl-mat4')
 
 module.exports = function (mesh) {
   var model = []

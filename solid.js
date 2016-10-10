@@ -1,4 +1,5 @@
 var anormals = require('angle-normals')
+var mat4 = require('gl-mat4')
 
 module.exports = function (mesh) {
   var model = []

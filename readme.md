@@ -8,6 +8,10 @@ command-line program to show a simplicial complex mesh from stdin
 meshview < mesh.json
 ```
 
+# hotkeys
+
+* w - toggle wireframe/solid display
+
 # install
 
 ```

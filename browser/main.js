@@ -1,20 +1,33 @@
-var regl = require('regl')()
-var camera = require('regl-camera')(regl, {
-  center: [0,0,0],
-  distance: 4
-})
 var glx = require('glslify')
 var resl = require('resl')
 var anormals = require('angle-normals')
 var mat4 = require('gl-mat4')
+var vec3 = require('gl-vec3')
 var wlines = require('screen-projected-lines')
 var qs = require('querystring')
+var regl = require('regl')()
 
-var params = qs.parse(location.hash.replace(/^#/,''))
-var state = {
-  display: params.display || 'solid'
+var state = qs.parse(location.hash.replace(/^#/,''))
+if (!state.display) state.display = 'solid'
+
+var camera = require('regl-camera')(regl, {
+  theta: Number(state.theta || 0),
+  phi: Number(state.phi || 0),
+  distance: Number(state.distance || 4)
+})
+window.camera = camera
+
+window.addEventListener('wheel', recalc)
+window.addEventListener('mousemove', recalc)
+
+var neye = []
+function recalc (ev) {
+  vec3.normalize(neye, camera.eye)
+  state.distance = vec3.length(camera.eye)
+  state.theta = Math.atan2(neye[2],neye[0])
+  state.phi = Math.asin(neye[1])
+  location.hash = '#' + qs.stringify(state)
 }
-var draw = {}
 
 window.addEventListener('keydown', function (ev) {
   if (ev.keyCode === 0x57) { // w -> wireframe
@@ -33,6 +46,7 @@ resl({
     }
   },
   onDone: function (assets) {
+    var draw = {}
     check()
     regl.frame(function () {
       check()
@@ -111,7 +125,7 @@ function wireframe (mesh) {
         vec4 p = proj * vec4(position,1);
         vec4 n = proj * vec4(nextpos,1);
         vec4 offset = linevoffset(p,n,direction,aspect);
-        gl_Position = p + offset * 0.02;
+        gl_Position = p + offset * 0.01;
       }
     `,
     attributes: {

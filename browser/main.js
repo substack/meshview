@@ -31,8 +31,11 @@ function Mesh (mesh) {
       precision mediump float;
       varying vec3 vpos, vnorm;
       void main () {
-        float l = max(dot(vec3(0.2,1,-0.3),vnorm)*0.8,
-          dot(vec3(-0.3,-1,-0.2),vnorm)*0.05);
+        float l = 0.0
+          + max(0.0,dot(normalize(vec3(0.2,1,-0.3)),vnorm))*0.8
+          + max(0.0,dot(normalize(vec3(-0.3,-0.5,-0.2)),vnorm))*0.2
+          + max(0.0,dot(normalize(vec3(0.8,-0.2,0.5)),vnorm))*0.2
+        ;
         gl_FragColor = vec4(l,l,l,1);
       }
     `,
